@@ -1,0 +1,84 @@
+@model ServerSideProcessing.Models.Employee
+
+
+@{
+    Layout = null;
+}
+@*@using (Html.BeginForm("AddOrEdit", "Employee", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+    {*@
+
+
+    @Html.HiddenFor(model => model.EmployeeID)
+
+    <div class="form-group">
+
+        @Html.LabelFor(model => model.Name, new { @class = "control-label" })
+        <span>:</span>
+        <span class="editors">
+            @*@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control"} })*@
+            @Html.DisplayTextFor(model => model.Name)
+        </span>
+        @Html.ValidationMessageFor(model => model.Name)
+    </div>
+    @*<div class="form-group">
+            @Html.LabelFor(model => model.Position, new { @class = "control-label" })
+            <span>:</span>
+            <span class="editors">
+                @Html.EditorFor(model => model.Position, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DisplayTextFor(model => model.Position)
+            </span>
+            @Html.ValidationMessageFor(model => model.Position)
+        </div>*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.Office, new { @class = "control-label" })
+        <span>:</span>
+        <span class="editors">
+            @*@Html.EditorFor(model => model.Office, new { htmlAttributes = new { @class = "form-control" } })*@
+            @Html.DisplayTextFor(model => model.Office)
+        </span>
+    </div>
+    @* <div class="form-group">
+            @Html.LabelFor(model => model.Age, new { @class = "control-label" })
+            <span>:</span>
+            <span class="editors">
+                @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DisplayTextFor(model => model.Age)
+            </span>
+        </div>*@
+    @*<div class="form-group">
+
+            @Html.LabelFor(model => model.Salary, new { @class = "control-label" })
+            <span>:</span>
+
+
+                <span class="editors">
+                    @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" }})
+                    @Html.DisplayTextFor(model => model.Salary)
+                </span>
+
+        </div>*@
+
+    @*<div class="form-group">
+            <input type="submit" value="Submit" class="btn btn-primary" />
+            <input type="reset" value="Reset" class="btn" />
+        </div>*@
+    @*}*@
+
+        
+@*<div id="output">
+
+</div>
+<div style="clear:both;">
+    <input type="button" value="Get HTML">
+</div>*@
+
+
+@*<script type="text/javascript">
+    $(function () { $('.editors :input').attr("disabled", true); });*@
+
+   @* $(':button').click(function () {
+        $('#output').text(JSON.stringify({
+            data: $('#data').html()
+        }));
+    });*@
+@*</script>*@

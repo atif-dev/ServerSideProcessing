@@ -1,0 +1,155 @@
+﻿
+@{
+    ViewBag.Title = "Employee List";
+}
+
+<h2>Employee List</h2>
+
+<table id="employeetable" class="ui celled table" style="width:100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Office</th>
+            <th>Age</th>
+            <th>Salary</th>
+            <th>View Information</th>
+        </tr>
+    </thead>
+    @*<tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>*@
+</table>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.semanticui.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.semanticui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.js"></script>
+
+    <script>
+
+
+
+        var Popup, dataTable;
+        $(document).ready(function () {
+            dataTable = $("#employeetable").DataTable({
+                "ajax": {
+                    "url": "/Employee/GetList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "Name", "name": "Name" },
+                    { "data": "Position", "name": "Position" },
+                    { "data": "Office", "name": "Office" },
+                    { "data": "Age", "name": "Age" },
+                    { "data": "Salary", "name": "Salary" },
+                    {
+                        "data": "EmployeeID", "render": function (data) {
+                            return "<a class='btn btn-default' onclick=PopupForm('@Url.Action("AddOrEdit","Employee")/" + data + "')>View</a>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "150px"
+                    }
+
+                ],
+
+                "serverSide": "true",
+                "order": [0, "asc"],
+                "processing": "true",
+                "language": {
+                    "processing": "processing... please wait"
+                }
+
+                
+
+            });
+        });
+
+
+        
+        function PopupForm(url) {
+
+            var formDiv = $('<div/>');
+
+            $.get(url)
+
+                .done(function (response) {
+
+                    formDiv.html(response);
+                 /*   console.log(formDiv)*/
+                    Popup = formDiv.dialog({
+
+                        autoOpen: true,
+                        resizable: false,
+                        title: 'Employee Details',
+                        height: 500,
+                        width: 700,
+                        close: function () {
+                            Popup.dialog('destroy').remove();
+                            /*formDiv.dialog('close');*/
+                        }
+
+                    });
+                    /*$("#ui-id-1").text(JSON.parse(JSON.stringify(formDiv[0].innerText)));*/
+                    
+                   
+                });
+            
+        }
+        
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            dataTable.ajax.reload();
+
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        /*$("body").on("click", ".btn", function () {
+            var TableData;
+            TableData = storeTblValues();
+            var myJsonString = TableData.join(",");
+            alert(myJsonString);
+
+        });
+        function storeTblValues() {
+            var TableData = new Array();
+            $('#employeetable tbody tr').each(function (row, tr) {
+                TableData.push($(tr).find('td:eq(0)').html());
+            });
+            return TableData;
+        }*/
+
+
+
+    </script>
+}
