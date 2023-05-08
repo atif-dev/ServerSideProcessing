@@ -8,6 +8,7 @@ using System.Linq.Dynamic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
 using System.Web.Helpers;
+using System.IO;
 
 namespace ServerSideProcessing.Controllers
 {
@@ -21,7 +22,21 @@ namespace ServerSideProcessing.Controllers
             return View();
         }
 
-        [HttpPost]
+		public ActionResult ViewAll()
+		{
+			return View(GetAllEmployee());
+		}
+
+		IEnumerable<Employee> GetAllEmployee()
+		{
+			using (DBModel1 db = new DBModel1())
+			{
+				return db.Employees.ToList<Employee>();
+			}
+
+		}
+
+		[HttpPost]
         public ActionResult GetList()
         {
             //Server Side Parameter
@@ -70,9 +85,87 @@ namespace ServerSideProcessing.Controllers
             }
         }
 
+		public ActionResult Add(int id = 0)
+		{
+			Employee emp = new Employee();
+			if (id != 0)
+			{
+				using (DBModel1 db = new DBModel1())
+				{
+					emp = db.Employees.Where(x => x.EmployeeID == id).FirstOrDefault<Employee>();
+				}
+			}
+			return View(emp);
+		}
+
+		[HttpPost]
+		public ActionResult Add(Employee emp)
+		{
+			try
+			{
+				using (DBModel1 db = new DBModel1())
+				{
+					if (emp.EmployeeID == 0)
+					{
+						db.Employees.Add(emp);
+						db.SaveChanges();
+					}
+					else
+					{
+						db.Entry(emp).State = EntityState.Modified;
+						db.SaveChanges();
+
+					}		
+				}
+				return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+
+			}
+			catch (Exception ex)
+			{
+
+				return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+			}
+		}
+
+		/*[HttpGet]
+		public ActionResult Add(int id = 0)
+		{
+			if (id == 0)
+				return View(new Employee());
+			else
+			{
+				using (DBModel1 db = new DBModel1())
+				{
+					return View(db.Employees.Where(x => x.EmployeeID == id).FirstOrDefault<Employee>());
+				}
+			}
+		}
+
+		[HttpPost]
+		public ActionResult Add(Employee emp)
+		{
+			using (DBModel1 db = new DBModel1())
+			{
+				if (emp.EmployeeID == 0)
+				{
+					db.Employees.Add(emp);
+					db.SaveChanges();
+					return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+				}
+				else
+				{
+					db.Entry(emp).State = EntityState.Modified;
+					db.SaveChanges();
+					return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+				}
+			}
 
 
-        /* [HttpPost]
+		}*/
+
+
+
+		/* [HttpPost]
          public ActionResult AddOrEdit(Employee emp)
          {
              using (DBModel1 db = new DBModel1())
@@ -93,5 +186,5 @@ namespace ServerSideProcessing.Controllers
 
 
          }*/
-    }
+	}
 }

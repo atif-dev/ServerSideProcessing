@@ -4,6 +4,16 @@
 }
 
 <h2>Employee List</h2>
+<ul class="nav nav-tabs">
+    <li><a data-toggle="tab" href="#firstTab">View All</a></li>
+    <li><a data-toggle="tab" href="#secondTab">Add New</a></li>
+</ul>
+<div class="tab-content">
+    <div id="firstTab" class="tab-pane fade in active">@Html.Action("ViewAll")</div>
+    <div id="secondTab" class="tab-pane fade in">@Html.Action("Add")</div>
+</div>
+
+
 
 <table id="employeetable" class="ui celled table" style="width:100%">
     <thead>
@@ -73,17 +83,14 @@
                     "processing": "processing... please wait"
                 }
 
-                
+
 
             });
         });
 
-
-        
+        var formDiv = $('<div/>');
         function PopupForm(url) {
-
-            var formDiv = $('<div/>');
-
+            formDiv.dialog({ autoOpen: false })
             $.get(url)
 
                 .done(function (response) {
@@ -103,13 +110,31 @@
                         }
 
                     });
-                    /*$("#ui-id-1").text(JSON.parse(JSON.stringify(formDiv[0].innerText)));*/
-                    
-                   
+
                 });
-            
+
         }
-        
+
+        function PopupForm2(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        title: 'Fill Employee Details',
+                        height: 500,
+                        width: 700,
+                        close: function () {
+                            Popup.dialog('destroy').remove();
+                        }
+
+                    });
+                });
+        }
+
         function SubmitForm(form) {
             $.validator.unobtrusive.parse(form);
             if ($(form).valid()) {
@@ -134,20 +159,6 @@
             return false;
         }
 
-        /*$("body").on("click", ".btn", function () {
-            var TableData;
-            TableData = storeTblValues();
-            var myJsonString = TableData.join(",");
-            alert(myJsonString);
-
-        });
-        function storeTblValues() {
-            var TableData = new Array();
-            $('#employeetable tbody tr').each(function (row, tr) {
-                TableData.push($(tr).find('td:eq(0)').html());
-            });
-            return TableData;
-        }*/
 
 
 
